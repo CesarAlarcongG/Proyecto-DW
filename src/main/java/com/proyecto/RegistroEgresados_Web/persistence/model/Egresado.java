@@ -1,5 +1,6 @@
 package com.proyecto.RegistroEgresados_Web.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,10 +28,12 @@ public class Egresado {
     private Date fechaEgreso;
     private float ponderado;
 
-    @OneToMany(mappedBy = "egresado")
+    @OneToMany(mappedBy = "egresado", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ExperienciaLaboral> idExperienciaLaboral;
 
-    @OneToMany(mappedBy = "egresado")
+    @OneToMany(mappedBy = "egresado", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<HistorialActualizacion> historialActualizacion;
 
 }

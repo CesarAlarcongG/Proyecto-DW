@@ -1,9 +1,12 @@
 package com.proyecto.RegistroEgresados_Web.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Getter
@@ -22,8 +25,9 @@ public class ExperienciaLaboral {
     private Date fechaIngreso;
     private Date fechaSalida;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_egresado", referencedColumnName = "id")
+    @JsonBackReference
     private Egresado egresado;
 
 }

@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -95,6 +96,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
+    @Override
+    public Optional<Usuario> findById(int id) {
+        return usuarioRepository.findById(id);
+    }
+
+
     public boolean validarExistenciaPorCorreo(String email){
         if(usuarioRepository.findByEmail(email).isPresent()){
             return true;
@@ -109,7 +116,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .email(usuarioDTO.getEmail())
                 .contraseña(passwordEncoder.encode(usuarioDTO.getContraseña()))
                 .telefono(usuarioDTO.getTelefono())
-                .rol(Rol.ASMINISTRADOR)
+                .rol(Rol.ADMINISTRADOR)
                 .build();
     }
 

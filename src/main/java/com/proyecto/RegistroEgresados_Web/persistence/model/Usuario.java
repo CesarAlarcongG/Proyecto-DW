@@ -1,5 +1,6 @@
 package com.proyecto.RegistroEgresados_Web.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.proyecto.RegistroEgresados_Web.persistence.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,9 +29,11 @@ public class Usuario implements UserDetails {
     private int telefono;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference
     private List<HistorialActualizacion> historialActualizacions;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 110)
     private Rol rol;
 
 

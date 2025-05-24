@@ -18,12 +18,12 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @PostMapping("/registrar")
-    public ResponseEntity<?> registrar(UsuarioDTO usuarioDTO){
+    public ResponseEntity<?> registrar(@RequestBody UsuarioDTO usuarioDTO){
         return usuarioService.registrarUsuario(usuarioDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(CredencialesDTO credencialesDTO){
+    public ResponseEntity<?> login(@RequestBody CredencialesDTO credencialesDTO){
         return usuarioService.login(credencialesDTO);
     }
 }

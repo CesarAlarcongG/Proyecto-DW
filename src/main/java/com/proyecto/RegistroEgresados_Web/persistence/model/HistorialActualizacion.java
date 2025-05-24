@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Getter
 @Setter
@@ -20,12 +22,14 @@ public class HistorialActualizacion {
     private Date fechaActualizacion;
     private String descripcion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
+    @JsonBackReference
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_egresado", referencedColumnName = "id")
+    @JsonBackReference
     private Egresado egresado;
 
 }

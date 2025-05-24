@@ -9,7 +9,7 @@ import java.util.Set;
 
 public enum Rol {
 
-    ASMINISTRADOR(Set.of(
+    ADMINISTRADOR(Set.of(
             Permiso.USUARIO_CREATE,
             Permiso.USUARIO_VIEW,
             Permiso.USUARIO_EDIT,

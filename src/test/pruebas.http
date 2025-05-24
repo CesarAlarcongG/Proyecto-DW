@@ -1,0 +1,8 @@
+POST http://localhost:8080/usuario/login
+Content-Type: application/json
+
+{
+    "email": "root@root.root",
+    "contraseña":"root12345678"
+}
+
