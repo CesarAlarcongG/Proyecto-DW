@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public ResponseEntity<?> registrarUsuario(UsuarioDTO ususarioDto){
         //1. Validar si el correo ya fue registrado en otra cuenta
-        if (!validarExistenciaPorCorreo(ususarioDto.getEmail())){
+        if (validarExistenciaPorCorreo(ususarioDto.getEmail())){
            return new ResponseEntity<>("El correo ya fue registrado en otra cuenta", HttpStatus.CONFLICT);
         }
 
@@ -44,11 +45,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = convertirAUsuario(ususarioDto);
 
         //3. Almacenamos el usuario en la BD
-        if(guargarUsuario(usuario) == null){
+        Usuario usuarioAlmacenado = guargarUsuario(usuario);
+        if(usuarioAlmacenado == null){
             return new ResponseEntity<>("Hay un problema al almacenar en la BD", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        ususarioDto.setContraseña("null");
-        return new ResponseEntity<>(ususarioDto, HttpStatus.OK);
+
+        //4. Quitamos la contraseña del usuario
+        usuarioAlmacenado.setContraseña(null);
+        usuarioAlmacenado.setRol(Rol.ADMINISTRADOR);
+
+        return new ResponseEntity<>(usuarioAlmacenado, HttpStatus.OK);
     }
 
 
