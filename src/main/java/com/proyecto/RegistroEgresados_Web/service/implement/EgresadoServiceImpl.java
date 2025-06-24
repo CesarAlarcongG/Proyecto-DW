@@ -1,20 +1,21 @@
 package com.proyecto.RegistroEgresados_Web.service.implement;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import com.proyecto.RegistroEgresados_Web.dto.ExperienciaLaboralDTO;
+import com.proyecto.RegistroEgresados_Web.dto.*;
+import com.proyecto.RegistroEgresados_Web.persistence.model.Usuario;
+import com.proyecto.RegistroEgresados_Web.persistence.model.enums.Rol;
+import com.proyecto.RegistroEgresados_Web.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.proyecto.RegistroEgresados_Web.dto.EgresadoDTO;
 import com.proyecto.RegistroEgresados_Web.persistence.model.Egresado;
 import com.proyecto.RegistroEgresados_Web.persistence.model.ExperienciaLaboral;
 import com.proyecto.RegistroEgresados_Web.persistence.model.HistorialActualizacion;
@@ -30,9 +31,14 @@ public class EgresadoServiceImpl implements EgresadoService {
     private EgresadoRepository egresadoRepository;
     @Autowired
     private ExperienciaLaboralService experienciaLaboralService;
-    
     @Autowired
     private HistorialActualizacionService historialActualizacionService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtService jwtService;
 
 
     @Override
@@ -48,6 +54,7 @@ public class EgresadoServiceImpl implements EgresadoService {
 
         //3. Almacenamos en la BD
         Egresado egresado = egresadoRepository.save(egresadoDAtos);
+
         //3. Verificamos si tiene nuevos campos de experiencia laboral
         if (!egresadoDTO.getExperienciaLaboralDTO().isEmpty()){
             añadirExperienciaLaboral(egresadoDTO.getExperienciaLaboralDTO(), egresadoDAtos);
@@ -63,6 +70,48 @@ public class EgresadoServiceImpl implements EgresadoService {
        return new ResponseEntity<>(egresado, HttpStatus.ACCEPTED);
     }
 
+    @Override
+    public ResponseEntity<?> login(CredencialesDTO credencialesDto){
+        try {
+            // 1. Autenticación
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            credencialesDto.getEmail(),
+                            credencialesDto.getContraseña()
+                    )
+            );
+
+            // 2. Obtener usuario
+            Egresado egresado = egresadoRepository.findByEmail(credencialesDto.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+            // 3. Generar token
+            String token = jwtService.getToken(egresado);
+            egresado.setContraseña("hackthisballs");
+
+            return ResponseEntity.ok(mapearRespuesta(egresado, token));
+
+        } catch (BadCredentialsException e) {
+            // Credenciales inválidas
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Credenciales inválidas"));
+
+        } catch (DisabledException e) {
+            // Usuario deshabilitado
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Usuario deshabilitado"));
+
+        } catch (LockedException e) {
+            // Cuenta bloqueada
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Cuenta bloqueada"));
+
+        } catch (Exception e) {
+            // Error inesperado
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error en el servidor: " + e.getMessage()));
+        }
+    }
 
 
     @Override
@@ -141,7 +190,9 @@ public class EgresadoServiceImpl implements EgresadoService {
                 .nombre(egresadoDTO.getNombre())
                 .apellido(egresadoDTO.getApellido())
                 .email(egresadoDTO.getEmail())
+               .contraseña(passwordEncoder.encode(egresadoDTO.getContraseña()))
                 .carrera(egresadoDTO.getCarrera())
+                .rol(Rol.ADMINISTRADOR)
                 .fechaNacimiento(egresadoDTO.getFechaNacimiento())
                 .fechaIngreso(egresadoDTO.getFechaIngreso())
                 .fechaEgreso(egresadoDTO.getFechaEgreso())
@@ -177,6 +228,7 @@ public class EgresadoServiceImpl implements EgresadoService {
                 .id(egresado.getId())
                 .nombre(egresadoDTO.getNombre())
                 .email(egresadoDTO.getEmail())
+                .contraseña(passwordEncoder.encode(egresadoDTO.getContraseña()))
                 .apellido(egresadoDTO.getApellido())
                 .carrera(egresadoDTO.getCarrera())
                 .fechaNacimiento(egresadoDTO.getFechaNacimiento())
@@ -188,6 +240,12 @@ public class EgresadoServiceImpl implements EgresadoService {
                 .build();
 
    }
+    private EgresadoRespuestaDto mapearRespuesta(Egresado egresado, String token){
+        return EgresadoRespuestaDto.builder()
+                .egresado(egresado)
+                .token(token)
+                .build();
+    }
 
     
 

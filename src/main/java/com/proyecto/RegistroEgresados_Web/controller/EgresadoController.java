@@ -1,5 +1,6 @@
 package com.proyecto.RegistroEgresados_Web.controller;
 
+import com.proyecto.RegistroEgresados_Web.dto.CredencialesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,12 @@ public class EgresadoController {
     @PostMapping("/crear")
     public ResponseEntity<?> crear(@RequestBody EgresadoDTO egresadoDTO){
         return egresadoService.crear(egresadoDTO);
+    }
+
+    //Login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody CredencialesDTO credencialesDTO){
+        return egresadoService.login(credencialesDTO);
     }
 
     //obtener por id

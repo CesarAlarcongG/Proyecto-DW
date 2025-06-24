@@ -2,6 +2,7 @@ package com.proyecto.RegistroEgresados_Web.config.security;
 
 
 import com.proyecto.RegistroEgresados_Web.persistence.model.enums.Permiso;
+import com.proyecto.RegistroEgresados_Web.persistence.repository.EgresadoRepository;
 import com.proyecto.RegistroEgresados_Web.persistence.repository.UsuarioRepository;
 import com.proyecto.RegistroEgresados_Web.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +27,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
+import java.util.Optional;
 
 
 @Configuration
@@ -35,6 +38,8 @@ public class Security {
     private JwtService jwtService;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private EgresadoRepository egresadoRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, UserDetailsService userDetailsService)throws Exception{
@@ -46,7 +51,8 @@ public class Security {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/usuario/login").permitAll()
+                        .requestMatchers("/usuario/login", "/egresado/crear").permitAll()
+                        .requestMatchers("/egresado/login").permitAll()
                         .requestMatchers("/usuario/registro").hasAuthority(Permiso.USUARIO_CREATE.toString())
                         .requestMatchers("/egresado/actualizar").hasAnyAuthority(
                                 Permiso.USUARIO_EDIT.toString(),
@@ -81,9 +87,17 @@ public class Security {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        return username -> {
+            Optional<? extends UserDetails> usuario = usuarioRepository.findByEmail(username);
+            if (usuario.isPresent()) return usuario.get();
+
+            Optional<? extends UserDetails> egresado = egresadoRepository.findByEmail(username);
+            if (egresado.isPresent()) return egresado.get();
+
+            throw new UsernameNotFoundException("Usuario o egresado no encontrado con email: " + username);
+        };
     }
+
 
     //Este es la configuración de cors
     @Bean
