@@ -22,31 +22,38 @@ public class EgresadoController {
 
     //Create
     @PostMapping("/crear")
-    public ResponseEntity<?> crear(@RequestBody EgresadoDTO egresadoDTO){
+    public ResponseEntity<?> crear(@RequestBody EgresadoDTO egresadoDTO) {
         return egresadoService.crear(egresadoDTO);
     }
 
     //Login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody CredencialesDTO credencialesDTO){
+    public ResponseEntity<?> login(@RequestBody CredencialesDTO credencialesDTO) {
         return egresadoService.login(credencialesDTO);
     }
 
     //obtener por id
     @GetMapping("/obtener/{id}")
-    public ResponseEntity<?> obtenerPorId(@PathVariable int id){
+    public ResponseEntity<?> obtenerPorId(@PathVariable int id) {
         return egresadoService.obtenerPorId(id);
     }
+
     //obtener todos
     @GetMapping("/obtener/todos")
-    public ResponseEntity<?> obtenerPorId(){
+    public ResponseEntity<?> obtenerPorId() {
         return egresadoService.obtenerTodosLosEgresados();
     }
 
     //ACtualizar
     @PutMapping("/actualizar")
-    public ResponseEntity<?> obtenerPorId(@RequestBody EgresadoDTO egresadoDTO){
+    public ResponseEntity<?> obtenerPorId(@RequestBody EgresadoDTO egresadoDTO) {
         return egresadoService.actualizar(egresadoDTO);
+    }
+
+    //ExportarExcel
+    @GetMapping("/exportarExcel")
+    public ResponseEntity<?> exportarEgresadosAExcel() {
+        return egresadoService.exportarAExcel();
     }
 
 }
