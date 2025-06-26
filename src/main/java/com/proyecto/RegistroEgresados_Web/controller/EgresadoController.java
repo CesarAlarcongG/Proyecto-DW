@@ -56,4 +56,9 @@ public class EgresadoController {
         return egresadoService.exportarAExcel();
     }
 
+    @GetMapping("/exportarEgresadoYExperienciaAExcel")
+    public ResponseEntity<?> exportarEgresadoYExperienciaAExcel(){
+        return egresadoService.exportarEgresadoYExperienciaAExcel();
+    }
+
 }

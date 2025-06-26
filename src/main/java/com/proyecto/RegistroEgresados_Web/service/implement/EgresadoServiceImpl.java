@@ -126,7 +126,6 @@ public class EgresadoServiceImpl implements EgresadoService {
         return new ResponseEntity<>(egresado, HttpStatus.FOUND);
     }
 
-
     @Override
     public ResponseEntity<?> obtenerTodosLosEgresados() {
         List<Egresado> egresados = egresadoRepository.findAll();
@@ -176,13 +175,13 @@ public class EgresadoServiceImpl implements EgresadoService {
         return new ResponseEntity<>(egresadoActualizado, HttpStatus.OK);
     }
 
-
     @Override
     public ResponseEntity<?> eliminar(int id) {
         egresadoRepository.deleteById(id);
         return new ResponseEntity<>("Egresado eliminado", HttpStatus.OK);
     }
 
+    //Excel
     @Override
     public ResponseEntity<?> exportarAExcel() {
         try {
@@ -201,6 +200,21 @@ public class EgresadoServiceImpl implements EgresadoService {
         return null;
     }
 
+    @Override
+    public ResponseEntity<?> exportarEgresadoYExperienciaAExcel() {
+        try {
+            List<Egresado> egresados = egresadoRepository.findAll();
+            byte[] excel = excelExporter.exportarEgresadosYExperienciaLaboral(egresados);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=egresados.xlsx")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(excel);
+        } catch (Exception e) {
+            System.out.println("Problemas con el excel: " + e);
+
+        }
+        return null;
+    }
 
     private boolean verificarExistenciaPorEmail(String email) {
         return egresadoRepository.findByEmail(email).isPresent();

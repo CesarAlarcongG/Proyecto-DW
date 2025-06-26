@@ -22,4 +22,6 @@ public interface EgresadoService {
     ResponseEntity<?> login(CredencialesDTO credencialesDTO);
 
     ResponseEntity<?> exportarAExcel();
+
+    ResponseEntity<?> exportarEgresadoYExperienciaAExcel();
 }
