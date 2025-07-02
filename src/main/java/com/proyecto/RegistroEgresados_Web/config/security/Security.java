@@ -2,6 +2,7 @@ package com.proyecto.RegistroEgresados_Web.config.security;
 
 
 import com.proyecto.RegistroEgresados_Web.persistence.model.enums.Permiso;
+import com.proyecto.RegistroEgresados_Web.persistence.model.enums.Rol;
 import com.proyecto.RegistroEgresados_Web.persistence.repository.EgresadoRepository;
 import com.proyecto.RegistroEgresados_Web.persistence.repository.UsuarioRepository;
 import com.proyecto.RegistroEgresados_Web.service.JwtService;
@@ -54,9 +55,7 @@ public class Security {
                         .requestMatchers("/usuario/login", "/egresado/crear").permitAll()
                         .requestMatchers("/egresado/login").permitAll()
                         .requestMatchers("/usuario/registro").hasAuthority(Permiso.USUARIO_CREATE.toString())
-                        .requestMatchers("/egresado/actualizar").hasAnyAuthority(
-                                Permiso.USUARIO_EDIT.toString(),
-                                Permiso.ALUMNO_EDIT.toString())
+                        .requestMatchers("/egresado/actualizar").hasRole(Rol.ADMINISTRADOR.toString())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

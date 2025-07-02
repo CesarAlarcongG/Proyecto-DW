@@ -273,6 +273,7 @@ public class EgresadoServiceImpl implements EgresadoService {
                 .fechaNacimiento(egresadoDTO.getFechaNacimiento())
                 .fechaIngreso(egresadoDTO.getFechaIngreso())
                 .fechaEgreso(egresadoDTO.getFechaEgreso())
+                .rol(Rol.ADMINISTRADOR)
                 .ponderado(egresadoDTO.getPonderado())
                 .historialActualizacion(egresado.getHistorialActualizacion())
                 .idExperienciaLaboral(egresado.getIdExperienciaLaboral())
