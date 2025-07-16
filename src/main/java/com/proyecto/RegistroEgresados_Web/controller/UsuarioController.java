@@ -5,10 +5,7 @@ import com.proyecto.RegistroEgresados_Web.dto.UsuarioDTO;
 import com.proyecto.RegistroEgresados_Web.service.interfaces.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
@@ -25,5 +22,10 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody CredencialesDTO credencialesDTO){
         return usuarioService.login(credencialesDTO);
+    }
+
+    @GetMapping("/obtener/todos")
+    public ResponseEntity<?> obtenerTodosLosEgresados() {
+        return usuarioService.obtenerTodosLosEgresados();
     }
 }

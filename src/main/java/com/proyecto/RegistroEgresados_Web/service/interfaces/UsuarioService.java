@@ -13,4 +13,6 @@ public interface UsuarioService {
     ResponseEntity<?> registrarUsuario(UsuarioDTO usuarioDto);
     ResponseEntity<?> login(CredencialesDTO credencialesDTO);
     Optional<Usuario> findById(int id);
+
+    ResponseEntity<?> obtenerTodosLosEgresados();
 }

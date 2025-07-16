@@ -107,6 +107,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.findById(id);
     }
 
+    @Override
+    public ResponseEntity<?> obtenerTodosLosEgresados() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+
+        return ResponseEntity.ok(usuarios);
+    }
+
 
     public boolean validarExistenciaPorCorreo(String email){
         if(usuarioRepository.findByEmail(email).isPresent()){
