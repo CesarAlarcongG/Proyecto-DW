@@ -24,6 +24,11 @@ public class ExperienciaLaboral {
     private Date fechaIngreso;
     private Date fechaSalida;
 
+    private int numerocontacto;
+    private int numeroDeEmpresa;
+    private String paginaWebEmpresa;
+    private String direccion;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_egresado", referencedColumnName = "id")
     @JsonBackReference

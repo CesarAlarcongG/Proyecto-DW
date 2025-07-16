@@ -18,10 +18,17 @@ public class EgresadoDTO {
     private String email;
     private String contraseña;
     private String carrera;
+
+    private String universidad;
+    private String facultad;
+    private String especialidad;
+
     private Date fechaNacimiento;
     private Date fechaIngreso;
     private Date fechaEgreso;
     private float ponderado;
     private List<ExperienciaLaboralDTO> experienciaLaboralDTO;
     private HistorialActualizacionDTO historialActualizaciones;
+
+
 }

@@ -27,6 +27,10 @@ public class ExperienciaLaboralServiceImpl implements ExperienciaLaboralService{
                     .cargo(experiencia.getCargo())
                     .fechaIngreso(experiencia.getFechaIngreso())
                     .fechaSalida(experiencia.getFechaSalida())
+                    .numerocontacto(experiencia.getNumerocontacto())
+                    .numeroDeEmpresa(experiencia.getNumeroDeEmpresa())
+                    .paginaWebEmpresa(experiencia.getPaginaWebEmpresa())
+                    .direccion(experiencia.getDireccion())
                     .egresado(egresado) // Establece la relación con el egresado
                     .build();
             lista.add(exp);

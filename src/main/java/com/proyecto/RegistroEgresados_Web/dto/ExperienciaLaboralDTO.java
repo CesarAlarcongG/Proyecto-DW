@@ -19,4 +19,9 @@ public class ExperienciaLaboralDTO {
     private String cargo;
     private Date fechaIngreso;
     private Date fechaSalida;
+
+    private int numerocontacto;
+    private int numeroDeEmpresa;
+    private String paginaWebEmpresa;
+    private String direccion;
 }
